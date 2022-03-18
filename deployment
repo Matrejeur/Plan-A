@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: devopschallenge
+spec:
+  replicas: 3
+  minReadySeconds: 10 # wait for 45 sec before going to deploy next pod
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  
+      maxSurge: 1        # max number of pods to run for the deployment
+  selector:
+    matchLabels:
+      app: devopschallenge
+  template:
+    metadata:
+      name: devopschallenge
+      labels:
+        app: devopschallenge
+    spec:
+      containers:
+       - name: devopschallenge
+         image: matrejeur/devopschallenge:v1
+         
+        
+---
+kind: Service
+apiVersion: v1
+metadata:
+   name: devopschallenge-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 8010
+      targetPort: 8010
+  selector: 
+    app: devopschallenge
